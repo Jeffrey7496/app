@@ -1,6 +1,7 @@
 package com.ysx.dao;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
 import com.ysx.dto.Demo;
 import org.apache.ibatis.annotations.*;
 
@@ -11,7 +12,7 @@ import org.apache.ibatis.annotations.*;
  * @email 545030930@qq.com
  * @date 2019/5/31 10:49
  */
-@Mapper
+
 public interface DemoMapper {
     @Insert("insert into demo (name) values (#{name})")
     public boolean insert(Demo demo);
@@ -29,4 +30,6 @@ public interface DemoMapper {
     boolean update(Demo demo);
     @Delete("delete from demo where id =#{id}")
     boolean delete(JSONObject param);
+    @Select("select * from demo")
+    Page<JSONObject> list();// pageHelper自动加上分页
 }

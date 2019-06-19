@@ -1,7 +1,8 @@
-package com.ysx.config.web;
+package com.ysx.web;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
 import com.ysx.constants.Constants;
 import com.ysx.dto.ResultInfo;
 import com.ysx.service.DemoService;
@@ -74,7 +75,28 @@ public class DemoController {
         JSONObject param = new JSONObject();
         param.put("id",id);
         logger.info("start====UUID:[{}],functionDesc:[{}],param:[{}]",uuid,"查询demo",JSON.toJSONString(param));
-        resultInfo = service.getOne(param);
+        resultInfo = service.info(param);
+        logger.info("end====UUID:[{}],functionDesc:[{}],result:[{}]",uuid,"查询demo",JSON.toJSONString(resultInfo));
+        return resultInfo;
+    }
+    @GetMapping("/list")
+    public ResultInfo<JSONObject> list(@RequestParam("pageNum") int pageNum,@RequestParam("pageSize") int pageSize){
+        ResultInfo<JSONObject> resultInfo;
+        String uuid = CommonUtils.getUUID();
+        JSONObject param = new JSONObject();
+        param.put("pageNum",pageNum);
+        param.put("pageSize",pageSize);
+        logger.info("start====UUID:[{}],functionDesc:[{}],param:[{}]",uuid,"查询demo",JSON.toJSONString(param));
+        resultInfo = service.list(pageNum,pageSize);
+        logger.info("end====UUID:[{}],functionDesc:[{}],result:[{}]",uuid,"查询demo",JSON.toJSONString(resultInfo));
+        return resultInfo;
+    }    @GetMapping("/listAll")
+    public ResultInfo<JSONObject> listAll(){
+        ResultInfo<JSONObject> resultInfo;
+        String uuid = CommonUtils.getUUID();
+        JSONObject param = new JSONObject();
+        logger.info("start====UUID:[{}],functionDesc:[{}],param:[{}]",uuid,"查询demo",JSON.toJSONString(param));
+        resultInfo = service.listAll();
         logger.info("end====UUID:[{}],functionDesc:[{}],result:[{}]",uuid,"查询demo",JSON.toJSONString(resultInfo));
         return resultInfo;
     }
