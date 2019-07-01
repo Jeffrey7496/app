@@ -16,6 +16,7 @@ public class Constants {
     public static class Msg {
         public static final String FAIL_MSG = "失败";
         public static final String SUCCESS_MSG = "成功";
+        public static final String ILLEGAL_ARGUMENT_MSG = "参数非法，请检查后重试";
     }
 
     public static class RedisKey{

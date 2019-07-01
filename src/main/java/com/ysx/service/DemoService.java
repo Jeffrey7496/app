@@ -1,7 +1,6 @@
 package com.ysx.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -98,10 +97,10 @@ public class DemoService {
     }
     @Read
     @Transactional(propagation = Propagation.NOT_SUPPORTED,readOnly = true,isolation = Isolation.DEFAULT)
-    public ResultInfo<JSONObject> list(int pageNum,int pageSize) {
+    public ResultInfo<JSONObject> list(int pageNum,int pageSize) {// 分页使用
         ResultInfo<JSONObject> resultInfo = new ResultInfo<>();//默认 失败
-        Page<JSONObject> page = null;
-        page= mapper.list();
+        PageHelper.startPage(pageNum,pageSize);// 访问数据之前使用,重新设置分页信息
+        Page<JSONObject> page= mapper.list();
         JSONObject data = new JSONObject();
         data.put("list",page.getResult());
         data.put("pages",page.getPages());

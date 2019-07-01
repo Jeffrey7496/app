@@ -2,31 +2,25 @@ package com.ysx.config.page;
 
 import com.github.pagehelper.PageHelper;
 import com.ysx.config.datasource.DataSourceAop;
-import com.ysx.config.datasource.DataSourceTypeHolder;
 import com.ysx.constants.Constants;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * pageHelper分页AOP
- *
+ * 测试使用，实际不使用
  * @auther jeffrey
  * @email 545030930@qq.com
  * @date 2019/6/19 13:48
  */
 @Aspect
-@Component
+//@Component  //不注入，不使用该aop，因为不实用，使用的时候直接调用即可
 public class pageHelperAop {
     private static Logger logger = LoggerFactory.getLogger(DataSourceAop.class);
 

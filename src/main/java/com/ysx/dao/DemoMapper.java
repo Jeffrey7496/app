@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.ysx.dto.Demo;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Repository;
 
 /**
  * Demo
@@ -12,7 +13,7 @@ import org.apache.ibatis.annotations.*;
  * @email 545030930@qq.com
  * @date 2019/5/31 10:49
  */
-
+@Repository
 public interface DemoMapper {
     @Insert("insert into demo (name) values (#{name})")
     public boolean insert(Demo demo);

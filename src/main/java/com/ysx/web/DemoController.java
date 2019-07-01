@@ -2,7 +2,6 @@ package com.ysx.web;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.Page;
 import com.ysx.constants.Constants;
 import com.ysx.dto.ResultInfo;
 import com.ysx.service.DemoService;
