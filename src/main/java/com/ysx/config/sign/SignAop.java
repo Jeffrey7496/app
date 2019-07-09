@@ -26,7 +26,7 @@ import java.io.BufferedReader;
 
 /**
  * sign 切面
- * 采用的对称加密，使用sign签名
+ * 采用的对称加密，使用sign签名--防止消息被篡改，但是不能防止被查看
  * @auther jeffrey
  * @email 545030930@qq.com
  * @date 2019/6/28 13:46
@@ -86,7 +86,7 @@ public class SignAop {
                     LOGGER.debug("服务端签名============"+mySignStr);
                     if (!mySignStr.equals(clientSignStr)){// 如果不同，则不行
                         ResultInfo<JSONObject> result = new ResultInfo<>();
-                        result.quickSet(Constants.Msg.ILLEGAL_ARGUMENT_MSG,false);
+                        result.failOfBusiness(Constants.Msg.ILLEGAL_ARGUMENT_MSG);
                         return result;
                     }else {
                         LOGGER.debug("签名验证通过");
@@ -98,7 +98,7 @@ public class SignAop {
             throwable.printStackTrace();
             ResultInfo resultInfo = new ResultInfo();
             LOGGER.info("异常",throwable);
-            resultInfo.quickSet("系统错误",false);
+            resultInfo.success("系统错误",false);
             return resultInfo;
         }
         LOGGER.debug("=============> jtp method name:{}",joinPoint.toLongString());

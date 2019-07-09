@@ -53,10 +53,20 @@ public class DemoService {
         //根据id 判断 新增还是修改
         if (StringUtils.isEmpty(param.getString("id"))){//没有id 则是新增
             boolean b = mapper.insert(demo);
-            return resultInfo.quickSet("新增Demo",b);
+            if (b){
+                resultInfo.success("新增Demo");
+            }else {
+                resultInfo.failOfBusiness("失败");
+            }
+            return resultInfo;
         }else {//修改
             boolean b = mapper.update(demo);
-            return resultInfo.quickSet("修改Demo",b);
+            if (b){
+                resultInfo.success("修改Demo");
+            }else {
+                resultInfo.failOfBusiness("修改Demo");
+            }
+            return resultInfo;
         }
     }
     @Read
@@ -75,11 +85,11 @@ public class DemoService {
             }
         }
         if (!stringRedisTemplate.opsForHash().hasKey(key,id)){// 必须查询对应的key
-            resultInfo.quickSet("查询Demo",false);
+            resultInfo.failOfBusiness("查询Demo");
         }else {
             jsonObject = JSONObject.parseObject((String) stringRedisTemplate.opsForHash().get(key,id));
             logger.info("info使用缓存");
-            resultInfo.quickSet("查询Demo",jsonObject,true);
+            resultInfo.success("查询Demo",jsonObject);
         }
         return resultInfo;
     }
@@ -89,9 +99,11 @@ public class DemoService {
     public ResultInfo<JSONObject> delete(JSONObject param) {
         ResultInfo<JSONObject> resultInfo = new ResultInfo<>();//默认 失败
         boolean b = mapper.delete(param);
-        resultInfo.quickSet("删除Demo",b);
         if(b){ // 删除对应id
+            resultInfo.success("删除Demo");
             stringRedisTemplate.opsForHash().delete(Constants.RedisKey.DEMO_MAP_KEY,param.getString("id"));
+        }else {
+            resultInfo.failOfBusiness("删除Demo");
         }
         return resultInfo;
     }
@@ -106,9 +118,9 @@ public class DemoService {
         data.put("pages",page.getPages());
         data.put("total",page.getTotal());
         if (page!=null){
-            resultInfo.quickSet("查询Demo",data,true);
+            resultInfo.success("查询Demo",data);
         }else {
-            resultInfo.quickSet("查询Demo",null,false);
+            resultInfo.success("查询Demo",null);
         }
         return resultInfo;
     }    @Read
@@ -142,9 +154,9 @@ public class DemoService {
             }
             JSONObject data = new JSONObject();
             data.put("list",dataList);
-            resultInfo.quickSet("查询Demo",data,true);
+            resultInfo.success("查询Demo",data);
         }else {
-            resultInfo.quickSet("查询Demo",null,false);
+            resultInfo.failOfBusiness("查询Demo失败，没有对应信息");
         }
 
         return resultInfo;

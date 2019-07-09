@@ -2,7 +2,6 @@ package com.ysx.web;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.ysx.constants.Constants;
 import com.ysx.dto.ResultInfo;
 import com.ysx.service.DemoService;
 import com.ysx.util.CommonUtils;
@@ -27,12 +26,13 @@ public class DemoController {
     private Logger logger = LoggerFactory.getLogger(DemoController.class);
     @PostMapping("/insert")
     public ResultInfo<JSONObject> insert(@RequestBody JSONObject param){
-        ResultInfo<JSONObject> resultInfo;
+        ResultInfo<JSONObject> resultInfo = new ResultInfo<>();
         String uuid = CommonUtils.getUUID();
         logger.info("start====UUID:[{}],functionDesc:[{}],params:[{}]",uuid,"增加demo",JSON.toJSONString(param));
         // 参数检测
-        resultInfo = JsonCheckUtils.checkEmpty(param,"name");// 空值检测--返回错误信息，如果没有，则没有错误
-        if (Constants.Code.FAIL_CODE.equals(resultInfo.getRespCode())){// 如果有错误信息，则范返回
+        String failMsg = JsonCheckUtils.checkEmpty(param,"id");// 空值检测--返回错误信息，如果没有，则没有错误
+        if (failMsg==null){// 如果有错误信息，则范返回
+            resultInfo.failOfSystem("");
             return resultInfo;
         }
         resultInfo =  service.save(param);
@@ -41,12 +41,13 @@ public class DemoController {
     }
     @PostMapping("/delete")
     public ResultInfo<JSONObject> delete(@RequestBody JSONObject param){
-        ResultInfo<JSONObject> resultInfo;
+        ResultInfo<JSONObject> resultInfo = new ResultInfo<>();
         String uuid = CommonUtils.getUUID();
         logger.info("start====UUID:[{}],functionDesc:[{}],params:[{}]",uuid,"删除demo",JSON.toJSONString(param));
         // 参数检测
-        resultInfo = JsonCheckUtils.checkEmpty(param,"id");// 空值检测--返回错误信息，如果没有，则没有错误
-        if (Constants.Code.FAIL_CODE.equals(resultInfo.getRespCode())){// 如果有错误信息，则范返回
+        String failMsg = JsonCheckUtils.checkEmpty(param,"id");// 空值检测--返回错误信息，如果没有，则没有错误
+        if (failMsg==null){// 如果有错误信息，则范返回
+            resultInfo.failOfSystem("");
             return resultInfo;
         }
         resultInfo =  service.delete(param);
@@ -55,12 +56,13 @@ public class DemoController {
     }
     @PostMapping("/edit")
     public ResultInfo<JSONObject> edit(@RequestBody JSONObject param){
-        ResultInfo<JSONObject> resultInfo;
+        ResultInfo<JSONObject> resultInfo = new ResultInfo<>();
         String uuid = CommonUtils.getUUID();
         logger.info("start====UUID:[{}],functionDesc:[{}],params:[{}]",uuid,"修改demo",JSON.toJSONString(param));
         // 参数检测
-        resultInfo = JsonCheckUtils.checkEmpty(param,"id");// 空值检测--返回错误信息，如果没有，则没有错误
-        if (Constants.Code.FAIL_CODE.equals(resultInfo.getRespCode())){// 如果有错误信息，则范返回
+        String failMsg = JsonCheckUtils.checkEmpty(param,"id");// 空值检测--返回错误信息，如果没有，则没有错误
+        if (failMsg==null){// 如果有错误信息，则范返回
+            resultInfo.failOfSystem("");
             return resultInfo;
         }
         resultInfo = service.save(param);

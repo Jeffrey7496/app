@@ -1,8 +1,6 @@
 package com.ysx.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ysx.constants.Constants;
-import com.ysx.dto.ResultInfo;
 import org.springframework.util.StringUtils;
 
 /**
@@ -20,16 +18,12 @@ public class JsonCheckUtils {
      * @param keys
      * @return
      */
-    public static ResultInfo checkEmpty(JSONObject jsonObject, String... keys){
-        ResultInfo resultInfo = new ResultInfo();
+    public static String checkEmpty(JSONObject jsonObject, String... keys){
         for (String key:keys) {
             if(StringUtils.isEmpty(jsonObject.getString(key))){
-                resultInfo.setRespMsg(key+"不能为空");
-                return resultInfo;
+                return key+"不能为空";
             }
         }
-        resultInfo.setRespCode(Constants.Code.SUCCESS_CODE);
-        resultInfo.setRespMsg(Constants.Msg.SUCCESS_MSG);
-        return resultInfo;
+        return "";
     }
 }

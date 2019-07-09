@@ -160,8 +160,10 @@ public class RawWaterMarkUtils {
             g.drawImage(srcImg, 0, 0, srcWidth, srcHeight, null);
             // 水印图片数据 TODO 水印地址 config获取
             String watermarkImgPath = "C:\\Users\\asus\\Desktop\\组2.png";
+
             watermarkImgFis = new FileInputStream(watermarkImgPath);
-            BufferedImage watermarkImage = ImageIO.read(watermarkImgFis);
+            //BufferedImage watermarkImage = ImageIO.read(watermarkImgFis);
+            BufferedImage watermarkImage = ImageIO.read(getClass().getClassLoader().getResource("./resources/组2.png"));
             // 水印图片缩放
             watermarkImage = zoomImg(watermarkImage,srcWidth);// 根据源宽度进行
 

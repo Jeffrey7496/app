@@ -1,6 +1,5 @@
 package com.ysx.config.exception;
 
-import com.ysx.constants.Constants;
 import com.ysx.dto.ResultInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +24,7 @@ public class GlobalExceptionHandler {
     public ResultInfo<String> defaultErrorHandler(HttpServletRequest request,Exception e){
         ResultInfo<String> result= new ResultInfo<>();
         LOGGER.info("===========> GlobalException ",e);
-        result.setRespCode(Constants.Code.FAIL_CODE);
-        result.setRespMsg(Constants.Msg.FAIL_MSG);
+        result.failOfSystem("全局异常");
         result.setInfo(e.getMessage());
         result.setReqUrl(request.getRequestURL().toString());
         LOGGER.info(e.getMessage());
