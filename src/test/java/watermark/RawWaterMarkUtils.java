@@ -1,5 +1,9 @@
 package watermark;
 
+import com.drew.imaging.jpeg.JpegMetadataReader;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifIFD0Directory;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import gaode.MapUtils;
@@ -25,7 +29,7 @@ public class RawWaterMarkUtils {
 
     static void toFile1(BufferedImage bufferedImage) throws IOException {
 
-        OutputStream outImgStream = new FileOutputStream("C:\\Users\\asus\\Desktop\\生成的.jpg");
+        OutputStream outImgStream = new FileOutputStream("C:\\Users\\asus\\Desktop\\图片\\生成的.jpg");
         ImageIO.write(bufferedImage, "jpg", outImgStream);
         if(outImgStream != null){
             outImgStream.flush();
@@ -38,7 +42,7 @@ public class RawWaterMarkUtils {
     @Test
     public void testTTTTTTT() throws Exception {
         //原图片添加水印字节流
-        BufferedImage bufferedImage1 = ImageIO.read(new File("C:\\Users\\asus\\Desktop\\111.jpg"));
+        BufferedImage bufferedImage1 = ImageIO.read(new File("C:\\Users\\asus\\Desktop\\图片\\微信图片_20190711153440.jpg"));
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ImageIO.write(bufferedImage1,"jpg",out);
         byte[] data1 = out.toByteArray();
@@ -51,17 +55,17 @@ public class RawWaterMarkUtils {
 
 
         // 带水印的字节流转图片
-        File file = new File("C:\\Users\\asus\\Desktop\\临时.jpg");
+        File file = new File("C:\\Users\\asus\\Desktop\\图片\\临时.jpg");
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(data3,0,data3.length);
         fos.flush();
         fos.close();
 
         // 前端对方生成的带有所有信息的图片
-        File file1 = new File("C:\\Users\\asus\\Desktop\\bdbce93e18f6488a.jpg");
+        File file1 = new File("C:\\Users\\asus\\Desktop\\图片\\微信图片_20190711153440.jpg");
         // 将带有水印信息的图片转成字节流
         byte[] buffer = null;
-        FileInputStream fis = new FileInputStream(file);
+        FileInputStream fis = new FileInputStream(file1);
         ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);
         byte[] b = new byte[1000];
         int n;
@@ -77,14 +81,36 @@ public class RawWaterMarkUtils {
         // 打水印方法
         byte[] waterMarkedData = drawWaterMark(buffer);
 
-
-
-        RawWaterMarkUtils.toFile2(waterMarkedData);
+        RawWaterMarkUtils.toFile3(waterMarkedData);
     }
 
     private static void toFile2(byte[] bytes) throws IOException {
         System.out.println(bytes.length);
-        FileOutputStream fos = new FileOutputStream(new File("C:\\Users\\asus\\Desktop\\处理生成.jpg"));
+        FileOutputStream fos = new FileOutputStream(new File("C:\\Users\\asus\\Desktop\\图片\\处理生成.jpg"));
+        fos.write(bytes);
+        fos.close();
+    }
+    private static void toFile3(byte[] bytes) throws IOException {// 旋转
+        ByteArrayInputStream srcImgBais = new ByteArrayInputStream(bytes);// 读取原始图片字节流
+        Image srcImg = ImageIO.read(srcImgBais);// 读进来
+        srcImg = rotate(srcImg,getAngle(bytes));
+        // 宽、高
+        int srcWidth = srcImg.getWidth(null);
+        int srcHeight = srcImg.getHeight(null);
+        // 获取原图片图形数据
+        BufferedImage bufImg = new BufferedImage(srcWidth, srcHeight, BufferedImage.TYPE_INT_RGB);
+        // 获取原图片图形数据
+        Graphics2D g = bufImg.createGraphics();
+        g.drawImage(srcImg, 0, 0, srcWidth, srcHeight, null);
+
+
+        ByteArrayOutputStream resultBaos = new ByteArrayOutputStream();
+        ImageIO.write(bufImg,"jpg",resultBaos);
+        resultBaos.flush();
+        bytes = resultBaos.toByteArray();
+
+        System.out.println(bytes.length);
+        FileOutputStream fos = new FileOutputStream(new File("C:\\Users\\asus\\Desktop\\图片\\处理生成.jpg"));
         fos.write(bytes);
         fos.close();
     }
@@ -98,6 +124,7 @@ public class RawWaterMarkUtils {
     public byte[] drawWaterMark(byte[] srcBytes){
         byte[] result;
         ByteArrayInputStream srcImgBais=null;// 原图片输入流
+        ByteArrayInputStream srcImgBais2=null;// 读取角度
         FileInputStream watermarkImgFis=null;// 水印图片输入流
         ByteArrayOutputStream resultBaos=null;// 打水印后的图片输出流
         try {
@@ -149,8 +176,10 @@ public class RawWaterMarkUtils {
             }
 
             /*正式添加水印*/
-            srcImgBais = new ByteArrayInputStream(image);// 读取原始图片字节流
+            srcImgBais = new ByteArrayInputStream(srcBytes);// 读取原始图片字节流
             Image srcImg = ImageIO.read(srcImgBais);// 读进来
+            // 旋转
+            srcImg = rotate(srcImg,0);
             // 宽、高
             int srcWidth = srcImg.getWidth(null);
             int srcHeight = srcImg.getHeight(null);
@@ -159,11 +188,11 @@ public class RawWaterMarkUtils {
             Graphics2D g = bufImg.createGraphics();
             g.drawImage(srcImg, 0, 0, srcWidth, srcHeight, null);
             // 水印图片数据 TODO 水印地址 config获取
-            String watermarkImgPath = "C:\\Users\\asus\\Desktop\\组2.png";
+            String watermarkImgPath = "C:\\Users\\asus\\Desktop\\图片\\组2.png";
 
             watermarkImgFis = new FileInputStream(watermarkImgPath);
             //BufferedImage watermarkImage = ImageIO.read(watermarkImgFis);
-            BufferedImage watermarkImage = ImageIO.read(getClass().getClassLoader().getResource("./resources/组2.png"));
+            BufferedImage watermarkImage = ImageIO.read(getClass().getClassLoader().getResource("./组2.png"));
             // 水印图片缩放
             watermarkImage = zoomImg(watermarkImage,srcWidth);// 根据源宽度进行
 
@@ -188,9 +217,9 @@ public class RawWaterMarkUtils {
             // 抗锯齿--为什么不封装，因为会打多次文字
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             // 时间水印阴影
-            this.drawText(g,time,new Font("黑体",Font.PLAIN,fontSize),Color.gray,textX+1,textY+1);
+            this.drawText(g,time,new Font("思源黑体 CN",Font.PLAIN,fontSize),Color.gray,textX+1,textY+1);
             // 时间水印
-            this.drawText(g,time,new Font("黑体",Font.PLAIN,fontSize),Color.white,textX,textY);
+            this.drawText(g,time,new Font("思源黑体 CN",Font.PLAIN,fontSize),Color.white,textX,textY);
             // 地点水印处理
             if (!StringUtils.isEmpty(location)){// 如果有地点数据
                 StringBuffer sb = new StringBuffer();
@@ -198,9 +227,9 @@ public class RawWaterMarkUtils {
                     int endIndex = (rowSize*(i+1)>=locationNum)?locationNum:(i+1)*rowSize;// 字数是否已经超过
                     sb.append(location.substring(i*rowSize,endIndex));
                     // 地点水印阴影
-                    this.drawText(g,sb.toString(),new Font("黑体",Font.PLAIN,fontSize),Color.gray,textX+1,textY+(i+1)*singleHeight+1);
+                    this.drawText(g,sb.toString(),new Font("思源黑体 CN",Font.PLAIN,fontSize),Color.gray,textX+1,textY+(i+1)*singleHeight+1);
                     // 地点水印
-                    this.drawText(g,sb.toString(),new Font("黑体",Font.PLAIN,fontSize),Color.white,textX,textY+(i+1)*singleHeight);
+                    this.drawText(g,sb.toString(),new Font("思源黑体 CN",Font.PLAIN,fontSize),Color.white,textX,textY+(i+1)*singleHeight);
                     sb.setLength(0);
                     if (endIndex==locationNum){break;}
                 }
@@ -496,4 +525,104 @@ public class RawWaterMarkUtils {
     }
 
 
+    // 旋转
+    public static Image rotate(Image src, int angle) {
+        if (angle==0||angle==360){
+            return src;
+        }
+        int src_width = src.getWidth(null);
+        int src_height = src.getHeight(null);
+        // calculate the new image size
+        Rectangle rect_des = calcRotatedSize(new Rectangle(new Dimension(src_width, src_height)), angle);
+
+        BufferedImage res = null;
+        res = new BufferedImage(rect_des.width, rect_des.height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = res.createGraphics();
+        // transform
+        g2.translate((rect_des.width - src_width) / 2, (rect_des.height - src_height) / 2);
+        g2.rotate(Math.toRadians(angle), src_width / 2, src_height / 2);
+
+        g2.drawImage(src, null, null);
+        return res;
+    }
+
+    public static Rectangle calcRotatedSize(Rectangle src, int angel) {
+        // if angel is greater than 90 degree, we need to do some conversion
+        if (angel >= 90) {
+            if (angel / 90 % 2 == 1) {
+                int temp = src.height;
+                src.height = src.width;
+                src.width = temp;
+            }
+            angel = angel % 90;
+        }
+
+        double r = Math.sqrt(src.height * src.height + src.width * src.width) / 2;
+        double len = 2 * Math.sin(Math.toRadians(angel) / 2) * r;
+        double angel_alpha = (Math.PI - Math.toRadians(angel)) / 2;
+        double angel_dalta_width = Math.atan((double) src.height / src.width);
+        double angel_dalta_height = Math.atan((double) src.width / src.height);
+
+        int len_dalta_width = (int) (len * Math.cos(Math.PI - angel_alpha - angel_dalta_width));
+        int len_dalta_height = (int) (len * Math.cos(Math.PI - angel_alpha - angel_dalta_height));
+        int des_width = src.width + len_dalta_width * 2;
+        int des_height = src.height + len_dalta_height * 2;
+        return new java.awt.Rectangle(new Dimension(des_width, des_height));
+    }
+
+    // 判断方向
+    private static int getOrientation(byte[] bytes) {
+        int orientation= 0;
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(bytes);
+            Metadata metadata = JpegMetadataReader.readMetadata(inputStream);
+            Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+            orientation = 0;
+            if(directory != null && directory.containsTag(ExifIFD0Directory.TAG_ORIENTATION)){ // Exif信息中有保存方向,把信息复制到缩略图
+                orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION); // 原图片的方向信息
+                System.out.println(orientation);
+                return orientation;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream!=null){
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return orientation;
+    }
+
+    private static int getAngle(byte[] bytes){
+        int angle = 0;
+        try {
+            int  orientation= getOrientation(bytes);
+            if(6 == orientation ){
+                //6旋转90
+                angle = 90;
+            }else if( 3 == orientation){
+                //3旋转180
+                angle = 180;
+            }else if( 8 == orientation){
+                //8旋转90
+                angle = 270;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return angle;
+        }
+        return angle;
+    }
+
+    @Test
+    public void te(){
+        String s = "$$$$$4234fs";
+        byte[] bytes = s.getBytes();
+        System.out.println(lastIndexOf(bytes,"$$$$$"));
+    }
 }

@@ -33,11 +33,8 @@ public class LoginService {
     private JWTService jwtService;
     public ResultInfo<JSONObject> getPublicKey() {
         ResultInfo<JSONObject> resultInfo = new ResultInfo();
-        JSONObject key;
-        try {
-            key = RSACoderUtils.initKey();
-        } catch (Exception e) {
-            LOGGER.info("生成RSA密码对失败：{}",e);
+        JSONObject key = RSACoderUtils.initKey();
+        if (key==null){
             resultInfo.failOfSystem("生成密码对失败");
             return resultInfo;
         }
@@ -79,11 +76,11 @@ public class LoginService {
             resultInfo.failOfBusiness("账户密码验证失败");
             return resultInfo;
         }
-        // 缓存token--将信息传给前端后，每次携带token进行验证--TODO--token的作用不是解决保密问题
+        // 缓存token--将信息传给前端后，每次携带token进行验证--TODO--token的作用是通行证
         String token;
         try {
             token = jwtService.generateToken(account,user.getLong("id"));
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             LOGGER.info("生成token失败：{}",e);
             resultInfo.failOfSystem("生成token失败");
             return resultInfo;

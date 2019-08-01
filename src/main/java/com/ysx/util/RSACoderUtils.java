@@ -2,6 +2,8 @@ package com.ysx.util;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
 import java.security.*;
@@ -17,6 +19,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
  */
 public class RSACoderUtils {
     public static final String KEY_ALGORITHM = "RSA";
+    private static final Logger LOGGER = LoggerFactory.getLogger(RSACoderUtils.class);
+
 
     /**
      * 编码
@@ -41,8 +45,14 @@ public class RSACoderUtils {
      * @return JSONObject
      * @throws Exception
      */
-    public static JSONObject initKey() throws Exception {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
+    public static JSONObject initKey() {
+        KeyPairGenerator keyPairGenerator = null;
+        try {
+            keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
+        } catch (NoSuchAlgorithmException e) {
+            LOGGER.info("生成RSA密码对失败：{}",e);
+            return null;
+        }
         keyPairGenerator.initialize(1024);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         String publicKey = encryptByBase64(keyPair.getPublic().getEncoded());

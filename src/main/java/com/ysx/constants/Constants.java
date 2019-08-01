@@ -24,6 +24,7 @@ public class Constants {
         public static final String DEMO_MAP_KEY = "DEMO_LIST_KEY";
         public static final String APP_RSA_PUBLIC_KEY_PREFIX = "APP_RSA_PUBLIC_KEY_PREFIX";
         public static final String APP_TOKEN_SECRET_PREFIX = "APP_TOKEN_SECRET_PREFIX";
+
     }
 
     public static class Page{

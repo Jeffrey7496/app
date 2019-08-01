@@ -112,5 +112,7 @@ public class AESUtils {
         System.out.println("加密后2：" + encryptResult2);
         String decryptResult2 = decode(encryptResult2, password);   //先解码再解密
         System.out.println("解密后2：" + decryptResult2);
+
+        System.out.println(decode(null,password));
     }
 }
