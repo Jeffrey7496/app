@@ -17,10 +17,10 @@ public class MyTaskRunnableThreadPool {
     // runnable池
     public static List<MyTaskRunnable> runnablePool= null;
 
-    private static int sineNo = 0;
+    private static int sineNo = 0;// 记录添加任务的runnable
 
     private static class LazyHolder{
-        // 100个线程 100 个runnable，每个runnable 100个task
+        // 3个线程 3个runnable，每个runnable 最多2个task
         private static final MyTaskRunnableThreadPool INSTANCE =
                 new MyTaskRunnableThreadPool(3,2);
     }
@@ -44,13 +44,13 @@ public class MyTaskRunnableThreadPool {
 
     // 执行任务
     public void addTask(MyTask task) throws Exception {
-        //随机添加到某个runnable// 轮询添加
-        runnablePool.get(sineNo).add(task);//轮询添加
+        //随机添加到某个runnable-- 轮询添加
+        runnablePool.get(sineNo).add(task);// 向任务池中轮询添加
         reSign();
     }
     private void reSign(){
         sineNo++;
-        if (sineNo==runnablePool.size()){// 循环
+        if (sineNo==runnablePool.size()){// 循环 -- 如果达到最大，重新循环
             sineNo = sineNo-runnablePool.size();
         }
     }

@@ -11,7 +11,7 @@ spring:
       pool:
         max-active: 8
         max-idle: 8
-        max-wait: 2000 # 最大连接等待时间，-1为无限制
+        max-wait: 2000ms # 最大连接等待时间，-1为无限制
         min-idle: 0
     #host: localhost
     #database: 0

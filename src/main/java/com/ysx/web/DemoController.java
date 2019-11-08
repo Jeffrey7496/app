@@ -101,4 +101,11 @@ public class DemoController {
         logger.info("end====UUID:[{}],functionDesc:[{}],result:[{}]",uuid,"查询demo",JSON.toJSONString(resultInfo));
         return resultInfo;
     }
+    @GetMapping("/listt")
+    public ResultInfo<JSONObject> listt(){
+        JSONObject jsonObject = new JSONObject();
+
+        service.listt();
+        return null;
+    }
 }

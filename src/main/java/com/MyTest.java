@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * TODO 哥们，写点东西吧
+ * 简单测试
  *
  * @auther jeffrey
  * @email 545030930@qq.com
@@ -42,4 +42,5 @@ public class MyTest {
 
         ImageIO.write(bi, "jpg", file);
     }
+
 }

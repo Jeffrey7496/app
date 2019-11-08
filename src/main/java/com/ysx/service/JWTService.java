@@ -34,6 +34,7 @@ public class JWTService {
     private StringRedisTemplate stringRedisTemplate;// 直接缓存
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTService.class);
+    private static final String TOKEN_SEPARATOR = "###";
     /**
      * 生成token，并缓存token密码
      * @param account
@@ -70,12 +71,13 @@ public class JWTService {
                 .withClaim("id",id)
                 .withExpiresAt(date)
                 .sign(algorithm)
-                +"##"+publicKey;
+                +TOKEN_SEPARATOR+publicKey;
         // 缓存token密码--15分钟过期--用户使用该token最后的公钥进行加密，然后后台获取请求后使用该私钥进行解密
         stringRedisTemplate.opsForValue().set(Constants.RedisKey.APP_TOKEN_SECRET_PREFIX+token,tokenSecret,EXPIRE_TIME,TimeUnit.MILLISECONDS);
         return token;
     }
 
+    // 解析token 不通过则直接pass
     public boolean verify(String token){
         try {
             String secret = stringRedisTemplate.opsForValue().get(Constants.RedisKey.APP_TOKEN_SECRET_PREFIX+token);
@@ -84,6 +86,9 @@ public class JWTService {
             }
             Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier jwtVerifier = JWT.require(algorithm).build();
+            // 获取token
+            int index = token.lastIndexOf(TOKEN_SEPARATOR);
+            token = token.substring(0,index);//分割出真正的token
             DecodedJWT decodedJWT = jwtVerifier.verify(token);
             if (decodedJWT!=null){
                 return true;
@@ -95,4 +100,5 @@ public class JWTService {
             return false;
         }
     }
+
 }

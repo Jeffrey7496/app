@@ -65,5 +65,4 @@ public class LoginController {
         ResultInfo<JSONObject> resultInfo;
         return null;
     }
-
 }

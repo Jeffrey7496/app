@@ -12,13 +12,18 @@ import java.util.List;
  */
 public class MyTaskRunnable implements Runnable{
     private int maxSize;
-    private List<MyTask> taskList;
+    private List<MyTask> taskList;// 任务池
 
     public MyTaskRunnable(int maxSize) {// 直接定义最大容量
         this.maxSize = maxSize;
         taskList = new ArrayList<>();
     }
 
+    /**
+     * 动态增加任务方法
+     * @param myTask
+     * @throws Exception
+     */
     public void add(MyTask myTask) throws Exception {
         if (taskList.size()<maxSize){
             taskList.add(myTask);
@@ -26,6 +31,10 @@ public class MyTaskRunnable implements Runnable{
             throw new Exception("数量过多，不能再处理");
         }
     }
+
+    /**
+     * 线程执行任务方法
+     */
     @Override
     public void run() {
         for (int i = 0; i < taskList.size(); i++) {

@@ -6,6 +6,8 @@ import com.ysx.dto.Demo;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Demo
  *
@@ -33,4 +35,20 @@ public interface DemoMapper {
     boolean delete(JSONObject param);
     @Select("select * from demo")
     Page<JSONObject> list();// pageHelper自动加上分页
+
+    @Select(value = {
+            "<script>",
+            "<trim suffixOverrides='union all'>",
+            "<foreach collection='allMsgTypes' item='msgTypeJson'>",
+            "(select id,createDate,msgType  from message_${tableNum} where staffNumber=#{staffNumber} and isDeleted=0 and msgType=#{msgTypeJson.msgType} order by createDate limit 1 ) union all",
+            "</foreach>",
+            "</trim>",
+            "</script>"
+    })
+    @ResultType(JSONObject.class)
+
+    void listt(@Param("tableNum") String tableNum,
+               @Param("allMsgTypes") List<JSONObject> allMsgTypes,
+               @Param("staffNumber") String staffNumber
+               );
 }

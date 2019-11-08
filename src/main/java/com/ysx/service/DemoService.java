@@ -161,4 +161,18 @@ public class DemoService {
 
         return resultInfo;
     }
+
+    public void listt() {
+        List<JSONObject> list = new ArrayList<>();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("msgType","0");
+        list.add(jsonObject);
+        JSONObject jsonObject1 = new JSONObject();
+        jsonObject1.put("msgType","0");
+        list.add(jsonObject1);
+        mapper.listt("97",list,"123");
+    }
+
+
+    // 查询语句测试
 }
